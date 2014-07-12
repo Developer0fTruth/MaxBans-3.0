@@ -1,0 +1,7 @@
+name: MaxBans
+version: 3.0 #Beta
+main: org.maxgamer.maxbans.bukkit.MaxBans
+authors: [Netherfoam]
+
+description: "A Rock Solid and Feather Light banning plugin!"
+website: http://maxgamer.org
