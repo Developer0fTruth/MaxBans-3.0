@@ -42,8 +42,8 @@ public class DatabaseWatcher{
 	public void queue(DatabaseTask task){
 		synchronized(tasks){
 			tasks.add(task);
+			tasks.notify();
 		}
-		tasks.notify();
 	}
 	
 	public static interface DatabaseTask{

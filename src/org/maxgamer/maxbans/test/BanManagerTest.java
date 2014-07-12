@@ -5,11 +5,13 @@ import java.sql.Connection;
 import java.util.UUID;
 
 import org.maxgamer.maxbans.BanManager;
+import org.maxgamer.maxbans.IPAddress;
 import org.maxgamer.maxbans.Profile;
 import org.maxgamer.maxbans.database.Database;
 import org.maxgamer.maxbans.database.DatabaseCore;
 import org.maxgamer.maxbans.database.SQLiteCore;
 import org.maxgamer.maxbans.punish.Ban;
+import org.maxgamer.maxbans.punish.IPBan;
 import org.maxgamer.maxbans.punish.Mute;
 
 public class BanManagerTest{
@@ -50,6 +52,15 @@ public class BanManagerTest{
 			System.out.println("Autocomplete: " + BanManager.getProfile("m", true));
 			System.out.println("No Autocomplete: " + BanManager.getProfile("maxbans", false));
 			System.out.println("No Autocomplete/Invalid: " + BanManager.getProfile("maxb", false));
+			
+			IPAddress addr = new IPAddress("127.0.0.3");
+			IPBan ipban = BanManager.getIPBan(addr);
+			if(ipban != null){
+				System.out.println("IPBan: " + ipban.getRange() + ", " + ipban.getReason());
+			}
+			else{
+				System.out.println("No ipban for 127.0.0.3");
+			}
 		}
 		catch(Exception e){
 			e.printStackTrace();

@@ -5,3 +5,18 @@ authors: [Netherfoam]
 
 description: "A Rock Solid and Feather Light banning plugin!"
 website: http://maxgamer.org
+
+permissions:
+    maxbans.ban:
+        description: Allows a player to ban others.
+        default: op
+        
+commands:
+    ban:
+        description: Bans a player permanently
+        usage: /ban <player> [time [units]] [-s] [reason]
+        aliases: [mbban]
+    unban:
+        description: Lifts a players ban
+        usage: /unban <player> [-s]
+        aliases: [mbunban]

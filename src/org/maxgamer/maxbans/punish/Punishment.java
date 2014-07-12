@@ -37,7 +37,11 @@ public class Punishment extends Eloquent{
 		return expires;
 	}
 	
+	public boolean isTemporary(){
+		return expires > 0;
+	}
+	
 	public boolean hasExpired(){
-		return expires < System.currentTimeMillis();
+		return isTemporary() && expires < System.currentTimeMillis();
 	}
 }

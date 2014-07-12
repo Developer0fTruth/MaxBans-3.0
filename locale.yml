@@ -1,0 +1,10 @@
+messages:
+    ban:
+        disconnect: "You have been banned :(\n'{reason}'\n-{banner} Expires: {remaining}"
+        broadcast: "{name} has been banned by {banner}. Reason: {reason}. Expires: {remaining}"
+    ipban:
+        disconnect: "Your IP has been banned :(\n'{reason}'\n-{banner} Expires: {remaining}\nRange: {range}"
+        broadcast: "{range} has been banned by {banner}. Reason: {reason}. Expires: {remaining}"
+    mute:
+        chat: "You're muted! Reason:'{reason}'\nExpires: {remaining}"
+        broadcast: "{name} has been muted by {banner}. Reason: {reason}. Expires: {remaining}"

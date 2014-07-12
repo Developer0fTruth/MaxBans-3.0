@@ -265,31 +265,37 @@ public class Eloquent{
 	
 	//Gets the value of the given field or returns null if unavailable.
 	private Object getField(String name){
-		try {
-			Field f = this.getClass().getDeclaredField(name);
-			boolean access = f.isAccessible();
-			
-			if(access == false) f.setAccessible(true);
-			Object o = f.get(this);
-			if(access == false) f.setAccessible(false);
-			
-			return o;
+		Class<?> c = this.getClass();
+		
+		while(c != null && c != Object.class){
+			try {
+				Field f = c.getDeclaredField(name);
+				boolean access = f.isAccessible();
+				
+				if(access == false) f.setAccessible(true);
+				Object o = f.get(this);
+				if(access == false) f.setAccessible(false);
+				
+				return o;
+			}
+			catch (NoSuchFieldException e) {
+				//e.printStackTrace();
+				//return null;
+			}
+			catch (SecurityException e) {
+				//e.printStackTrace();
+				//return null;
+			}
+			catch (IllegalArgumentException e) {
+				//e.printStackTrace();
+				//return null;
+			}
+			catch (IllegalAccessException e) {
+				//e.printStackTrace();
+				//return null;
+			}
+			c = c.getSuperclass();
 		}
-		catch (NoSuchFieldException e) {
-			e.printStackTrace();
-			return null;
-		}
-		catch (SecurityException e) {
-			e.printStackTrace();
-			return null;
-		}
-		catch (IllegalArgumentException e) {
-			e.printStackTrace();
-			return null;
-		}
-		catch (IllegalAccessException e) {
-			e.printStackTrace();
-			return null;
-		}
+		throw new IllegalArgumentException("No such field: " + name + " in class " + this.getClass().getSimpleName());
 	}
 }

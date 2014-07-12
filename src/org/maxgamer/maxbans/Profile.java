@@ -18,6 +18,7 @@ public class Profile extends Eloquent{
 		this(uuid);
 		this.user = user;
 		this.lastIp = lastIp;
+		this.lastSeen = lastSeen;
 	}
 	
 	@Override

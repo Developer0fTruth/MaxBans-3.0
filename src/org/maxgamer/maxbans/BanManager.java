@@ -5,11 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import org.maxgamer.maxbans.database.Database;
 import org.maxgamer.maxbans.database.DatabaseWatcher.DatabaseTask;
 import org.maxgamer.maxbans.punish.Ban;
+import org.maxgamer.maxbans.punish.IPBan;
 import org.maxgamer.maxbans.punish.Mute;
 
 public class BanManager{
@@ -21,6 +24,7 @@ public class BanManager{
 	
 	private static HashMap<Profile, Ban> bans;
 	private static HashMap<Profile, Mute> mutes;
+	private static TreeMap<IPAddress, IPBan> ipbans;
 	
 	public static void init(Database db) throws SQLException{
 		database = db;
@@ -31,6 +35,8 @@ public class BanManager{
 		uuidCache = new HashMap<String, UUID>();
 		bans = new HashMap<Profile, Ban>();
 		mutes = new HashMap<Profile, Mute>();
+		ipbans = new TreeMap<IPAddress, IPBan>();
+		
 		
 		PreparedStatement ps = con.prepareStatement("SELECT * FROM " + Tables.PROFILE_TABLE);
 		ResultSet rs = ps.executeQuery();
@@ -64,7 +70,7 @@ public class BanManager{
 		rs.close();
 		ps.close();
 		
-		ps = con.prepareStatement("SELECT * FROM mutes " + Tables.MUTE_TABLE);
+		ps = con.prepareStatement("SELECT * FROM " + Tables.MUTE_TABLE);
 		rs = ps.executeQuery();
 		while(rs.next()){
 			Mute mute = new Mute(rs.getString("profile"));
@@ -77,6 +83,21 @@ public class BanManager{
 		}
 		rs.close();
 		ps.close();
+		
+		ps = con.prepareStatement("SELECT * FROM " + Tables.IPBAN_TABLE);
+		rs = ps.executeQuery();
+		while(rs.next()){
+			IPBan ban = new IPBan(rs.getString("range"));
+			ban.load(rs);
+			
+			IPRange range = ban.getRange();
+			
+			ipbans.put(range.getStart(), ban);
+			
+			System.out.println("Loaded IPBan range: " + range + ", from string " + rs.getString("range")); 
+		}
+		rs.close();
+		ps.close();
 	}
 	
 	public static void destroy(){
@@ -86,6 +107,18 @@ public class BanManager{
 		bans = null;
 		mutes = null;
 		database = null; 
+	}
+	
+	public static IPBan getIPBan(IPAddress exact){
+		Entry<IPAddress, IPBan> entry = ipbans.floorEntry(exact);
+		if(entry != null){
+			if(exact.isGreaterThan(entry.getValue().getRange().getFinish()) == false){
+				return entry.getValue();
+			}
+			//Else, the IP address they're searching for is not contained in that ban.
+		}
+		
+		return null;
 	}
 	
 	public static Mute getMute(Profile profile){
@@ -118,6 +151,117 @@ public class BanManager{
 			}
 		}
 		return ban;
+	}
+	
+	public static void unban(Profile profile){
+		final Ban ban = getBan(profile);
+		
+		bans.remove(profile);
+		if(ban != null){
+			database.getWatcher().queue(new DatabaseTask(){
+				@Override
+				public void execute(Database db) throws SQLException {
+					ban.delete(db.getConnection());
+				}
+			});
+		}
+	}
+	
+	public static void unipban(IPAddress ip){
+		final IPBan ipban = getIPBan(ip);
+		
+		ipbans.remove(ipban.getRange().getStart());
+		if(ipban != null){
+			database.getWatcher().queue(new DatabaseTask(){
+				@Override
+				public void execute(Database db) throws SQLException {
+					ipban.delete(db.getConnection());
+				}
+			});
+		}
+	}
+	
+	public static void unmute(Profile profile){
+		final Mute mute = getMute(profile);
+		
+		mutes.remove(profile);
+		if(mute != null){
+			database.getWatcher().queue(new DatabaseTask(){
+				@Override
+				public void execute(Database db) throws SQLException {
+					mute.delete(db.getConnection());
+				}
+			});
+		}
+	}
+	
+	public static void ban(Profile profile, final Ban ban){
+		final Ban old = getBan(profile);
+		if(old != null){
+			if((old.isTemporary() && ban.isTemporary() && old.getExpires() >= ban.getExpires()) || (old.isTemporary() == false)){
+				throw new IllegalArgumentException("The user " + profile.getUser() + " already has a ban which lasts longer than the given one.");
+			}
+			
+			database.getWatcher().queue(new DatabaseTask(){
+				@Override
+				public void execute(Database db) throws SQLException {
+					old.delete(db.getConnection());
+				}
+			});
+		}
+		
+		bans.put(profile, ban);
+		database.getWatcher().queue(new DatabaseTask(){
+			@Override
+			public void execute(Database db) throws SQLException {
+				ban.insert(db.getConnection());
+			}
+		});
+	}
+	
+	public static void mute(Profile profile, final Mute mute){
+		final Mute old = getMute(profile);
+		if(old != null){
+			if((old.isTemporary() && mute.isTemporary() && old.getExpires() >= mute.getExpires()) || (old.isTemporary() == false)){
+				throw new IllegalArgumentException("The user " + profile.getUser() + " already has a mute which lasts longer than the given one.");
+			}
+			
+			database.getWatcher().queue(new DatabaseTask(){
+				@Override
+				public void execute(Database db) throws SQLException {
+					old.delete(db.getConnection());
+				}
+			});
+		}
+		
+		mutes.put(profile, mute);
+		database.getWatcher().queue(new DatabaseTask(){
+			@Override
+			public void execute(Database db) throws SQLException {
+				mute.insert(db.getConnection());
+			}
+		});
+	}
+	
+	public static void ipban(final IPBan ban){
+		IPRange range = ban.getRange();
+		IPBan old = ipbans.floorEntry(range.getFinish()).getValue();
+		
+		if(old != null){
+			if(old.getRange().getFinish().isGreaterThan(range.getStart()) == false || old.getRange().getFinish().isGreaterThan(range.getFinish())){
+				//Overlap.
+				System.out.println("Overlap detected between " + old.getRange() + " and " + range);
+				throw new IllegalArgumentException("IPBan overlap!");
+			}
+		}
+		
+		ipbans.put(range.getStart(), ban);
+		database.getWatcher().queue(new DatabaseTask(){
+			@Override
+			public void execute(Database db) throws SQLException {
+				ban.insert(db.getConnection());
+			}
+		});
 	}
 	
 	public static Profile getProfile(String name, boolean autocomplete){

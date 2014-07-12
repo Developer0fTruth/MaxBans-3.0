@@ -1,11 +1,9 @@
 database:
-	type: sqlite
-	table-prefix: "maxbans_"
-	host: localhost
-	database: maxbans
-	port: 3306
-	user: root
-	pass: pass
-
-	
-	
+    type: sqlite
+    table-prefix: "maxbans_"
+    host: localhost
+    database: maxbans
+    port: 3306
+    user: root
+    pass: pass
+    
