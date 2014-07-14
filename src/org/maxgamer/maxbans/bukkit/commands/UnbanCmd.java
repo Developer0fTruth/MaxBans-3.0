@@ -1,6 +1,7 @@
 package org.maxgamer.maxbans.bukkit.commands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.maxgamer.maxbans.BanManager;
 import org.maxgamer.maxbans.CommandParameters;
@@ -22,7 +23,7 @@ public class UnbanCmd extends CommandSkeleton{
 		
 		Profile victim = BanManager.getProfile(params.getTarget(), true);
 		if(victim == null){
-			s.sendMessage("No user " + params.getTarget() + " found.");
+			s.sendMessage(ChatColor.GREEN + "No user " + params.getTarget() + " found.");
 			return;
 		}
 		
@@ -59,7 +60,7 @@ public class UnbanCmd extends CommandSkeleton{
 		}
 		
 		if(success == false){
-			s.sendMessage("Could not locate a ban for " + victim.getUser());
+			s.sendMessage(ChatColor.GREEN + "Could not locate a ban for " + victim.getUser());
 		}
 	}
 }

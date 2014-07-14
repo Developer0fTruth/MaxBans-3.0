@@ -3,6 +3,7 @@ package org.maxgamer.maxbans.bukkit.commands;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.maxgamer.maxbans.BanManager;
@@ -35,12 +36,12 @@ public class BanCmd extends CommandSkeleton{
 				BanManager.ipban(ban);
 			}
 			catch(IllegalArgumentException e){
-				s.sendMessage("That ban overlaps with an existing IP ban.");
+				s.sendMessage(ChatColor.GREEN + "That ban overlaps with an existing IP ban.");
 				return;
 			}
 			
 			Time expirey = new Time(ban.getExpires());
-			String msg = Lang.get("ipban.disconnect", "banner", banner.getUser(), "reason", params.getReason(), "remaining", expirey.toDuration(System.currentTimeMillis()), "expires", expirey.toDate(), "range", range.toString(), "ip", range.toString());
+			String msg = Lang.get("ipban.disconnect", "banner", banner.getUser(), "reason", ChatColor.translateAlternateColorCodes('&', params.getReason()), "remaining", expirey.toDuration(System.currentTimeMillis()), "expires", expirey.toDate(), "range", range.toString(), "ip", range.toString());
 			msg = Util.trim(msg, 255);
 			for(Player p : Bukkit.getOnlinePlayers()){
 				IPAddress addr = new IPAddress(p.getAddress().getAddress().getHostAddress());
@@ -49,7 +50,7 @@ public class BanCmd extends CommandSkeleton{
 				}
 			}
 			
-			msg = Lang.get("ipban.disconnect", "banner", banner.getUser(), "reason", params.getReason(), "remaining", expirey.toDuration(System.currentTimeMillis()), "expires", expirey.toDate(), "range", range.toString(), "ip", range.toString());
+			msg = Lang.get("ipban.disconnect", "banner", banner.getUser(), "reason", ChatColor.translateAlternateColorCodes('&', params.getReason()), "remaining", expirey.toDuration(System.currentTimeMillis()), "expires", expirey.toDate(), "range", range.toString(), "ip", range.toString());
 			if(params.isSilent()){
 				Bukkit.broadcast("[Silent] " + msg, "maxbans.see.silent");
 			}
@@ -60,7 +61,7 @@ public class BanCmd extends CommandSkeleton{
 		catch(IllegalArgumentException e){
 			Profile victim = BanManager.getProfile(params.getTarget(), true);
 			if(victim == null){
-				s.sendMessage("No user " + params.getTarget() + " found.");
+				s.sendMessage(ChatColor.GREEN + "No user " + params.getTarget() + " found.");
 				return;
 			}
 			
@@ -69,7 +70,7 @@ public class BanCmd extends CommandSkeleton{
 			
 			if(old != null){
 				if((old.isTemporary() && ban.isTemporary() && old.getExpires() >= ban.getExpires()) || (old.isTemporary() == false)){
-					s.sendMessage("The user " + victim.getUser() + " has an existing ban which lasts longer than the given one.");
+					s.sendMessage(ChatColor.GREEN + "The user " + victim.getUser() + " has an existing ban which lasts longer than the given one.");
 					return;
 				}
 			}
@@ -82,7 +83,7 @@ public class BanCmd extends CommandSkeleton{
 			}
 			
 			Time expirey = new Time(ban.getExpires());
-			String msg = Lang.get("ban.broadcast", "reason", ban.getReason(), "banner", banner.getUser(), "remaining", expirey.toDuration(System.currentTimeMillis()), "expires", expirey.toDate(), "name", victim.getUser());
+			String msg = Lang.get("ban.broadcast", "reason", ChatColor.translateAlternateColorCodes('&', params.getReason()), "banner", banner.getUser(), "remaining", expirey.toDuration(System.currentTimeMillis()), "expires", expirey.toDate(), "name", victim.getUser());
 			if(params.isSilent()){
 				Bukkit.broadcast("[Silent] " + msg, "maxbans.see.silent");
 			}

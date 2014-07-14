@@ -1,6 +1,7 @@
 package org.maxgamer.maxbans.bukkit.commands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.maxgamer.maxbans.BanManager;
@@ -31,7 +32,7 @@ public class IPBanCmd extends CommandSkeleton{
 		catch(IllegalArgumentException e){
 			Profile victim = BanManager.getProfile(params.getTarget(), true);
 			if(victim == null){
-				s.sendMessage(params.getTarget() + " is not a valid IP, IP Range, or user.");
+				s.sendMessage(ChatColor.GREEN + params.getTarget() + " is not a valid IP, IP Range, or user.");
 				return;
 			}
 			
@@ -49,7 +50,7 @@ public class IPBanCmd extends CommandSkeleton{
 				range = IPRange.parse(params.getTarget());
 			}
 			else{
-				s.sendMessage("There is no IP record for that user. They have been banned normally instead.");
+				s.sendMessage(ChatColor.GREEN + "There is no IP record for that user. They have been banned normally instead.");
 				return;
 			}
 		}
@@ -60,12 +61,12 @@ public class IPBanCmd extends CommandSkeleton{
 			BanManager.ipban(ban);
 		}
 		catch(IllegalArgumentException e){
-			s.sendMessage("That ban overlaps with an existing IP ban.");
+			s.sendMessage(ChatColor.GREEN + "That ban overlaps with an existing IP ban.");
 			return;
 		}
 		
 		Time expirey = new Time(ban.getExpires());
-		String msg = Lang.get("ipban.disconnect", "banner", banner.getUser(), "reason", params.getReason(), "remaining", expirey.toDuration(System.currentTimeMillis()), "expires", expirey.toDate(), "range", range.toString(), "ip", range.toString());
+		String msg = Lang.get("ipban.disconnect", "banner", banner.getUser(), "reason", ChatColor.translateAlternateColorCodes('&', params.getReason()), "remaining", expirey.toDuration(System.currentTimeMillis()), "expires", expirey.toDate(), "range", range.toString(), "ip", range.toString());
 		msg = Util.trim(msg, 255);
 		for(Player p : Bukkit.getOnlinePlayers()){
 			IPAddress addr = new IPAddress(p.getAddress().getAddress().getHostAddress());
@@ -74,7 +75,7 @@ public class IPBanCmd extends CommandSkeleton{
 			}
 		}
 		
-		msg = Lang.get("ipban.disconnect", "banner", banner.getUser(), "reason", params.getReason(), "remaining", expirey.toDuration(System.currentTimeMillis()), "expires", expirey.toDate(), "range", range.toString(), "ip", range.toString());
+		msg = Lang.get("ipban.disconnect", "banner", banner.getUser(), "reason", ChatColor.translateAlternateColorCodes('&', params.getReason()), "remaining", expirey.toDuration(System.currentTimeMillis()), "expires", expirey.toDate(), "range", range.toString(), "ip", range.toString());
 		if(params.isSilent()){
 			Bukkit.broadcast("[Silent] " + msg, "maxbans.see.silent");
 		}

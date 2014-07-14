@@ -3,6 +3,7 @@ package org.maxgamer.maxbans.bukkit.commands;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.maxgamer.maxbans.BanManager;
@@ -24,7 +25,7 @@ public class MuteCmd extends CommandSkeleton{
 		
 		Profile victim = BanManager.getProfile(params.getTarget(), true);
 		if(victim == null){
-			s.sendMessage("No user " + params.getTarget() + " found.");
+			s.sendMessage(ChatColor.GREEN + "No user " + params.getTarget() + " found.");
 			return;
 		}
 		
@@ -33,7 +34,7 @@ public class MuteCmd extends CommandSkeleton{
 		
 		if(old != null){
 			if((old.isTemporary() && mute.isTemporary() && old.getExpires() >= mute.getExpires()) || (old.isTemporary() == false)){
-				s.sendMessage("The user " + victim.getUser() + " has an existing mute which lasts longer than the given one.");
+				s.sendMessage(ChatColor.GREEN + "The user " + victim.getUser() + " has an existing mute which lasts longer than the given one.");
 				return;
 			}
 		}
@@ -43,7 +44,7 @@ public class MuteCmd extends CommandSkeleton{
 		Player p = Bukkit.getPlayer(UUID.fromString(victim.getId()));
 		
 		Time expirey = new Time(mute.getExpires());
-		String msg = Lang.get("mute.broadcast", "reason", mute.getReason(), "banner", banner.getUser(), "muter", banner.getUser(), "remaining", expirey.toDuration(System.currentTimeMillis()), "expires", expirey.toDate(), "name", victim.getUser());
+		String msg = Lang.get("mute.broadcast", "reason", ChatColor.translateAlternateColorCodes('&', params.getReason()), "banner", banner.getUser(), "muter", banner.getUser(), "remaining", expirey.toDuration(System.currentTimeMillis()), "expires", expirey.toDate(), "name", victim.getUser());
 		
 		if(params.isSilent()){
 			Bukkit.broadcast("[Silent] " + msg, "maxbans.see.silent");

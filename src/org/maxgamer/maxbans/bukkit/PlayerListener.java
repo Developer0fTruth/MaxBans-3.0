@@ -3,6 +3,7 @@ package org.maxgamer.maxbans.bukkit;
 import java.sql.SQLException;
 import java.util.UUID;
 
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -23,7 +24,7 @@ public class PlayerListener implements Listener{
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onLogin(PlayerLoginEvent e){
 		if(BanManager.isLockdown()){
-			e.disallow(Result.KICK_OTHER, Util.trim(Lang.get("lockdown.disconnect", "reason", BanManager.getLockdownReason()), 255));
+			e.disallow(Result.KICK_OTHER, Util.trim(Lang.get("lockdown.disconnect", "reason", ChatColor.translateAlternateColorCodes('&', BanManager.getLockdownReason())), 255));
 			return;
 		}
 		
@@ -41,7 +42,7 @@ public class PlayerListener implements Listener{
 		if(p != null){ 
 			//This guy has a history. 
 			if(p.getBan() != null){
-				e.disallow(Result.KICK_OTHER, Util.trim(p.getBan().getDisconnectMessage(), 255));
+				e.disallow(Result.KICK_OTHER, Util.trim(ChatColor.translateAlternateColorCodes('&', p.getBan().getDisconnectMessage()), 255));
 				return;
 			} 
 			
@@ -74,7 +75,7 @@ public class PlayerListener implements Listener{
 		
 		if(p.getMute() != null){
 			e.setCancelled(true);
-			e.getPlayer().sendMessage(p.getMute().getMuteMessage());
+			e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', p.getMute().getMuteMessage()));
 		}
 	}
 }
