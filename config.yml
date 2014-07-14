@@ -7,3 +7,6 @@ database:
     user: root
     pass: pass
     
+default:
+    reason: "Misconduct"
+    

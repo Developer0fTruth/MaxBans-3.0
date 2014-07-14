@@ -26,6 +26,22 @@ public class BanManager{
 	private static HashMap<Profile, Mute> mutes;
 	private static TreeMap<IPAddress, IPBan> ipbans;
 	
+	private static boolean lockdown = false;
+	private static String  lockdownReason = "Maintenance";
+	
+	public static boolean isLockdown(){
+		return lockdown;
+	}
+	
+	public static String getLockdownReason(){
+		return lockdownReason;
+	}
+	
+	public static void setLockdown(boolean lock, String reason){
+		lockdown = lock;
+		lockdownReason = reason;
+	}
+	
 	public static void init(Database db) throws SQLException{
 		database = db;
 		Connection con = database.getConnection();
@@ -250,7 +266,6 @@ public class BanManager{
 		if(old != null){
 			if(old.getRange().getFinish().isGreaterThan(range.getStart()) == false || old.getRange().getFinish().isGreaterThan(range.getFinish())){
 				//Overlap.
-				System.out.println("Overlap detected between " + old.getRange() + " and " + range);
 				throw new IllegalArgumentException("IPBan overlap!");
 			}
 		}

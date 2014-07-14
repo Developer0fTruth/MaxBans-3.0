@@ -19,6 +19,8 @@ public class Lang{
 		if(msg == null) return "No such MaxBans language message defined for " + key + ", please inform an administrator.";
 		
 		for(int i = 0; i < args.length; i++){
+			if(args[i] == null) throw new NullPointerException("Invalid argument for Lang.get, key " + i + " is null");
+			if(args[i+1] == null) throw new NullPointerException("Invalid argument for Lang.get, argument " + (i + 1) + " is null");
 			msg = msg.replaceAll("\\{" + args[i] + "\\}", args[++i]);
 		}
 		return msg;

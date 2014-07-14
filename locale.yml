@@ -1,10 +1,17 @@
 messages:
     ban:
-        disconnect: "You have been banned :(\n'{reason}'\n-{banner} Expires: {remaining}"
-        broadcast: "{name} has been banned by {banner}. Reason: {reason}. Expires: {remaining}"
+        disconnect: "&fYou have been banned :(\n'&a{reason}&f'\n-&a{banner}&f Expires: &a{remaining}&f"
+        broadcast: "&a{name}&f has been banned by &a{banner}&f. Reason: &a{reason}&f. Expires: &a{remaining}&f"
+        unban: "&a{name}&f has been unbanned by &a{banner}&f."
     ipban:
-        disconnect: "Your IP has been banned :(\n'{reason}'\n-{banner} Expires: {remaining}\nRange: {range}"
-        broadcast: "{range} has been banned by {banner}. Reason: {reason}. Expires: {remaining}"
+        disconnect: "&fYour IP has been banned :(\n'&a{reason}&f'\n-&a{banner}&f Expires: &a{remaining}&f\nRange: &a{range}&f"
+        broadcast: "&a{range}&f has been banned by &a{banner}&f. Reason: &a{reason}&f. Expires: &a{remaining}&f"
+        unban: "&a{range}&f has been unbanned by &a{banner}&f"
     mute:
-        chat: "You're muted! Reason:'{reason}'\nExpires: {remaining}"
-        broadcast: "{name} has been muted by {banner}. Reason: {reason}. Expires: {remaining}"
+        chat: "&fYou're muted! Reason:'&a{reason}&f'\nExpires: &a{remaining}&f"
+        broadcast: "&a{name}&f has been muted by &a{banner}&f. Reason: &a{reason}&f. Expires: &a{remaining}&f"
+        unmute: "&a{name}&f has been unmuted by &a{banner}&f"
+    lockdown:
+        disconnect: "&fThe server is currently under lockdown.\nReason:&a{reason}&f"
+        broadcast: "&a{name}&f has put the server in lockdown. New players may not connect until the lockdown is removed. Reason: {reason}"
+        lockoff: "&a{name}&f has removed the lockdown on the server. New players may now connect to the server."

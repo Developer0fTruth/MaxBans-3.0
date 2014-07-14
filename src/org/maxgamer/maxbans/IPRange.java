@@ -59,4 +59,8 @@ public class IPRange{
 	public IPAddress getFinish(){
 		return finish;
 	}
+	
+	public boolean contains(IPAddress address){
+		return start.isGreaterThan(address) == false && finish.isLessThan(address) == false;
+	}
 }

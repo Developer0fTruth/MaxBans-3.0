@@ -1,0 +1,19 @@
+TODO:
+	Commands:
+		Allow IP's to be used in /ban
+		Allow usernames to be used in /ipban
+		Parse colour codes in messages
+	
+	Functionality:
+		Lockdown toggle
+		Warning system/config
+		Mute for commands
+		GeoIP lookup
+		DNSBL lookup
+	
+	Source:
+		Javadocs
+		Github repository
+	
+	Sync/Server:
+		

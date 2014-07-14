@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -17,7 +18,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.maxgamer.maxbans.BanManager;
 import org.maxgamer.maxbans.Profile;
 import org.maxgamer.maxbans.bukkit.commands.BanCmd;
+import org.maxgamer.maxbans.bukkit.commands.IPBanCmd;
+import org.maxgamer.maxbans.bukkit.commands.LockdownCmd;
+import org.maxgamer.maxbans.bukkit.commands.MuteCmd;
 import org.maxgamer.maxbans.bukkit.commands.UnbanCmd;
+import org.maxgamer.maxbans.bukkit.commands.UnmuteCmd;
 import org.maxgamer.maxbans.database.Database;
 import org.maxgamer.maxbans.database.DatabaseCore;
 import org.maxgamer.maxbans.database.MySQLCore;
@@ -80,7 +85,9 @@ public class MaxBans extends JavaPlugin{
 			HashMap<String, String> strings = new HashMap<String, String>();
 			for(Entry<String, Object> entry : map.entrySet()){
 				if(entry.getValue() instanceof String){
-					strings.put(entry.getKey(), (String) entry.getValue());
+					String s = (String) entry.getValue();
+					s = ChatColor.translateAlternateColorCodes('&', s);
+					strings.put(entry.getKey(), s);
 				}
 			}
 			
@@ -164,6 +171,10 @@ public class MaxBans extends JavaPlugin{
 		
 		new BanCmd();
 		new UnbanCmd();
+		new MuteCmd();
+		new UnmuteCmd();
+		new IPBanCmd();
+		new LockdownCmd();
 	}
 	
 	@Override

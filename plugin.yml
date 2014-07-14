@@ -10,13 +10,36 @@ permissions:
     maxbans.ban:
         description: Allows a player to ban others.
         default: op
+    maxbans.see.silent:
+        description: Allow the user to see silent punishments
+        default: op
+    maxbans.see.broadcast:
+        description: Allow the user to see broadcasted punishments
+        default: true
         
 commands:
     ban:
-        description: Bans a player permanently
+        description: Bans a player
         usage: /ban <player> [time [units]] [-s] [reason]
         aliases: [mbban]
+    ipban:
+        description: Bans an IP address
+        usage: /ipban <ip> [time [units]] [-s] [reason]
+        aliases: [mbipban]
     unban:
         description: Lifts a players ban
         usage: /unban <player> [-s]
         aliases: [mbunban]
+
+    mute:
+        description: Mutes a player
+        usage: /mute <player> [time [units]] [-s] [reason]
+        aliases: [mbmute]
+    unmute:
+        description: Lifts a players mute
+        usage: /unmute <player> [-s]
+        aliases: [mbunmute]
+    lockdown:
+        description: Controls the server's lockdown state
+        usage: /lockdown [on|off] [reason]
+        aliases: [mblockdown]

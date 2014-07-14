@@ -12,18 +12,25 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.maxgamer.maxbans.BanManager;
 import org.maxgamer.maxbans.IPAddress;
 import org.maxgamer.maxbans.Profile;
+import org.maxgamer.maxbans.Util;
 import org.maxgamer.maxbans.database.Database;
 import org.maxgamer.maxbans.database.DatabaseWatcher.DatabaseTask;
+import org.maxgamer.maxbans.language.Lang;
 import org.maxgamer.maxbans.punish.IPBan;
 
 public class PlayerListener implements Listener{
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onLogin(PlayerLoginEvent e){
+		if(BanManager.isLockdown()){
+			e.disallow(Result.KICK_OTHER, Util.trim(Lang.get("lockdown.disconnect", "reason", BanManager.getLockdownReason()), 255));
+			return;
+		}
+		
 		IPAddress address = new IPAddress(e.getAddress().getHostAddress());
 		IPBan ipban = BanManager.getIPBan(address);
 		if(ipban != null){
-			e.disallow(Result.KICK_OTHER, ipban.getDisconnectMessage());
+			e.disallow(Result.KICK_OTHER, Util.trim(ipban.getDisconnectMessage(), 255));
 			return;
 		}
 		
@@ -34,7 +41,7 @@ public class PlayerListener implements Listener{
 		if(p != null){ 
 			//This guy has a history. 
 			if(p.getBan() != null){
-				e.disallow(Result.KICK_OTHER, p.getBan().getDisconnectMessage());
+				e.disallow(Result.KICK_OTHER, Util.trim(p.getBan().getDisconnectMessage(), 255));
 				return;
 			} 
 			
